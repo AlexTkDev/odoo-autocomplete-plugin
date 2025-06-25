@@ -1,24 +1,41 @@
-# Odoo Autocompletion Support
+# 🚀 Odoo Autocomplete Plugin
 
-**Лицензия:** MIT
+An enhanced IntelliJ/PyCharm plugin for Odoo development. It provides advanced autocompletion, code navigation, and inspections to supercharge your workflow. Supports all Odoo versions!
 
-## Описание
-Плагин для PyCharm/IntelliJ, обеспечивающий автодополнение, навигацию и глубокую интеграцию для всех современных версий Odoo (включая 17.0+). Поддерживает Python, XML, CSV, JS, PO/POT, работу с моделями, действиями, views, группами, меню, отчётами и многое другое.
+## ✨ Features
 
-- Полная поддержка автодополнения и перехода к определению (Go To Declaration) для моделей, XML ID, actions, views, меню, групп, отчётов, JS-модулей, переводов и данных.
-- Совместимость с несколькими версиями Odoo в одном проекте.
-- Современная архитектура, высокая производительность.
+-   **Full Autocompletion:** For Models, Record XML IDs, Actions, Views, Menus, Groups, and more across Python, XML, and CSV files.
+-   **Go To Declaration:** Instantly navigate to the definition of any Odoo entity.
+-   **JavaScript Support:** Autocompletion and navigation for JS modules defined with `odoo.define`.
+-   **Translation Support:** Autocompletion and navigation for `msgid` entries from PO/POT files.
+-   **Smart Inspections:** Get warnings for missing models, records, JS modules, and translations.
+-   **High Performance:** Built with a powerful indexing engine for a fast and smooth developer experience.
 
-## Установка
-1. Соберите плагин: `./gradlew buildPlugin`
-2. Установите JAR из `build/libs/` через PyCharm: `File > Settings > Plugins > Install Plugin from Disk...`
+## 🛠️ Installation
 
-## Документация
-Подробное описание возможностей и примеры использования — в [documentation/README.md](documentation/README.md)
+1.  **Build the plugin:**
+    ```bash
+    ./gradlew buildPlugin
+    ```
+2.  The plugin `.jar` file will be created in the `build/libs/` directory.
+3.  **Install in your IDE:**
+    -   In PyCharm/IntelliJ, go to `File > Settings > Plugins`.
+    -   Click the gear icon ⚙️ and select **"Install Plugin from Disk..."**.
+    -   Choose the `.jar` file you just built.
 
-## Авторство
-Copyright (c) 2024 AlexTkDev
-Based on original work by wt-io-it/odoo-pycharm-plugin
+## 📚 Documentation
+
+For a detailed list of features, supported entities, and usage examples, please see the full documentation: [documentation/README.md](documentation/README.md).
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [License.txt](License.txt) file for details.
+
+## 🧑‍💻 Authorship
+
+Copyright (c) 2024 AlexTkDev.
+
+Based on the original work by `wt-io-it/odoo-pycharm-plugin`.
 
 # Installing
 
