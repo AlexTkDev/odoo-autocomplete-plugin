@@ -20,7 +20,6 @@ intellij {
 
 patchPluginXml {
     sinceBuild = project.findProperty('pluginSinceBuild')
-    untilBuild = null
 }
 
 tasks.withType(JavaCompile) {

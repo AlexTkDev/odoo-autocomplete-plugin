@@ -4,7 +4,7 @@
   <description>An enhanced IntelliJ/PyCharm plugin for Odoo development, providing advanced autocompletion, code navigation, and inspections for models, records, and more.</description>
   <vendor url="https://github.com/AlexTkDev/odoo-autocomplete-plugin">AlexTkDev</vendor>
   <version>1.0.1</version>
-  <idea-version since-build="251" until-build="241.*" />
+  <idea-version since-build="251" />
   <change-notes><![CDATA[<h3>Version 0.7.0</h3>
       <ul>
         <li><b>Feature:</b> Added full support for JavaScript module autocompletion and navigation (<code>odoo.define</code>).</li>
