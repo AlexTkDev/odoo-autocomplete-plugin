@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="record3" model="existing" />
+    <record id="addon1.record4" model="existing" />
+    <record id="inherited" model="inherited3">
+        <field name="inherited_id" ref="record7" />
+    </record>
+</odoo>

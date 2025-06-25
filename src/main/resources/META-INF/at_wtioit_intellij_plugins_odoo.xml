@@ -1,0 +1,60 @@
+<idea-plugin>
+
+    <resource-bundle>at.wtioit.intellij.plugins.OdooBundle</resource-bundle>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <completion.contributor language="Python"
+                                implementationClass="at.wtioit.intellij.plugins.odoo.OdooCompletionContributor" />
+        <completion.contributor language="XML"
+                                implementationClass="at.wtioit.intellij.plugins.odoo.OdooXmlCompletionContributor"
+                                order="first" />
+
+        <typeHierarchyProvider language="Python"
+                               implementationClass="at.wtioit.intellij.plugins.odoo.models.hierarchy.OdooModelHierarchyProvider"
+                               order="first" />
+
+        <projectService serviceInterface="at.wtioit.intellij.plugins.odoo.modules.OdooModuleService"
+                        serviceImplementation="at.wtioit.intellij.plugins.odoo.modules.impl.OdooModuleServiceImpl" />
+        <projectService serviceInterface="at.wtioit.intellij.plugins.odoo.models.OdooModelService"
+                        serviceImplementation="at.wtioit.intellij.plugins.odoo.models.impl.OdooModelServiceImpl" />
+        <projectService serviceInterface="at.wtioit.intellij.plugins.odoo.records.OdooRecordService"
+                        serviceImplementation="at.wtioit.intellij.plugins.odoo.records.impl.OdooRecordServiceImpl" />
+
+        <fileBasedIndex implementation="at.wtioit.intellij.plugins.odoo.index.OdooIndex" />
+        <!--fileBasedIndex implementation="at.wtioit.intellij.plugins.odoo.modules.index.OdooModuleFileIndex" /-->
+        <!--fileBasedIndex implementation="at.wtioit.intellij.plugins.odoo.models.index.OdooModelFileIndex" /-->
+        <!--fileBasedIndex implementation="at.wtioit.intellij.plugins.odoo.records.index.OdooRecordFileIndex" /-->
+
+        <searchEverywhereContributor implementation="at.wtioit.intellij.plugins.odoo.search.OdooSearchEverywhere" />
+
+        <!-- without displayName in XML for localInspections, tests in 2020.2 do not pass -->
+        <localInspection implementationClass="at.wtioit.intellij.plugins.odoo.models.inspection.MissingModelDefinitionInspection"
+                         displayName="Reference to a missing model definition"
+                         groupKey="INSP.GROUP.odoo"
+                         key="INSP.NAME.missing.model.definition"
+                         enabledByDefault="true"
+                         language="Python" />
+
+        <localInspection implementationClass="at.wtioit.intellij.plugins.odoo.records.inspection.MissingRecordDefinitionXmlInspection"
+                         displayName="Reference to a missing record defintion (xmlId)"
+                         groupKey="INSP.GROUP.odoo"
+                         key="INSP.NAME.missing.record.definition"
+                         enabledByDefault="true"
+                         language="XML" />
+
+        <lang.inspectionSuppressor implementationClass="at.wtioit.intellij.plugins.odoo.modules.inspection.ManifestInspectionSuppressor"
+                                   language="Python" />
+        <gotoDeclarationHandler implementation="at.wtioit.intellij.plugins.odoo.OdooGoToDeclarationHandler" />
+        <errorHandler implementation="at.wtioit.intellij.plugins.odoo.errorHandling.PluginErrorHandler" />
+    </extensions>
+    <extensions defaultExtensionNs="Pythonid">
+        <importResolver implementation="at.wtioit.intellij.plugins.odoo.pycharm.PyCharmOdooAddonsImportResolver" />
+    </extensions>
+    <projectListeners>
+        <listener class="at.wtioit.intellij.plugins.odoo.index.OdooDumbModeListener" topic="com.intellij.openapi.project.DumbService$DumbModeListener" />
+    </projectListeners>
+    <applicationListeners>
+        <listener class="at.wtioit.intellij.plugins.odoo.index.OdooUnindexedFilesUpdaterListener" topic="com.intellij.util.indexing.UnindexedFilesUpdaterListener" />
+    </applicationListeners>
+</idea-plugin>

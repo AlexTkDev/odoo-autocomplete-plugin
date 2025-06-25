@@ -1,0 +1,6 @@
+{
+    'depends': [
+        'recursion',
+        'addon1',
+    ],
+}

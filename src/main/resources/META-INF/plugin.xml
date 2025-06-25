@@ -1,0 +1,57 @@
+<idea-plugin>
+  <id>at.wtioit.intellij.plugins.odoo</id>
+  <name>Odoo Autocomplete Plugin</name>
+  <vendor email="admin.jetbrains-plugins@service.wt-io-it.at" url="http://www.wt-io-it.at">AlexTkDev</vendor>
+
+  <description><![CDATA[
+      <p>This plugin enhances PyCharm/IntelliJ IDEA with advanced autocompletion and navigation features for Odoo development.</p>
+      <p><strong>Core Features:</strong></p>
+      <ul>
+        <li><strong>Search Everywhere:</strong> Instantly find Odoo modules, models, and records.</li>
+        <li><strong>Model Hierarchy:</strong> View Odoo model inheritance in the type hierarchy view.</li>
+        <li><strong>Python Imports:</strong> Autocomplete and resolve <code>odoo.addons.*</code> imports.</li>
+        <li><strong>Model Names:</strong> Autocomplete model names in <code>_name</code>, <code>_inherit</code>, and relational fields (Many2one, etc.).</li>
+        <li><strong>Record IDs:</strong> Autocomplete record IDs from XML and CSV files.</li>
+        <li><strong>JS Modules:</strong> Autocomplete and navigate to JavaScript modules defined with <code>odoo.define</code>.</li>
+        <li><strong>PO/POT Files:</strong> Autocomplete and navigate to <code>msgid</code> entries from translation files.</li>
+        <li><strong>Navigation:</strong> Go To Declaration support for models, records, JS modules, and PO `msgid`s.</li>
+      </ul>
+      <p>The plugin is designed for performance and integrates smoothly into the IDE, providing a seamless experience for Odoo developers across all supported versions.</p>
+    ]]>
+  </description>
+  <idea-version since-build="251" />
+
+  <change-notes><![CDATA[
+      <h3>Version 0.7.0</h3>
+      <ul>
+        <li><b>Feature:</b> Added full support for JavaScript module autocompletion and navigation (<code>odoo.define</code>).</li>
+        <li><b>Feature:</b> Added full support for PO/POT file <code>msgid</code> autocompletion and navigation.</li>
+        <li><b>Feature:</b> Added inspections for missing JS modules and PO <code>msgid</code>s.</li>
+        <li><b>Update:</b> Plugin renamed to "Odoo Autocomplete Plugin".</li>
+        <li><b>Update:</b> Compatibility updated for IntelliJ/PyCharm 2025.1 and newer.</li>
+        <li><b>Refactor:</b> Translated codebase and documentation to English.</li>
+      </ul>
+    ]]>
+  </change-notes>
+
+  <depends>com.intellij.modules.platform</depends>
+
+  <extensions>
+    <localInspection language="XML" shortName="MissingRecordDefinitionXml" bundle="at.wtioit.intellij.plugins.OdooBundle"
+                     key="INSP.NAME.missing.record.definition" groupKey="INSP.GROUP.odoo"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="at.wtioit.intellij.plugins.odoo.records.inspection.MissingRecordDefinitionXmlInspection"/>
+    <localInspection language="JavaScript" shortName="MissingJsModule" bundle="at.wtioit.intellij.plugins.OdooBundle"
+                     key="INSP.NAME.missing.js.module" groupKey="INSP.GROUP.odoo"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="at.wtioit.intellij.plugins.odoo.inspections.MissingJsModuleInspection"/>
+    <localInspection language="Python" shortName="MissingPoMsgId" bundle="at.wtioit.intellij.plugins.OdooBundle"
+                     key="INSP.NAME.missing.po.msgid" groupKey="INSP.GROUP.odoo"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="at.wtioit.intellij.plugins.odoo.inspections.MissingPoMsgIdInspection"/>
+    <localInspection language="XML" shortName="MissingPoMsgIdXml" bundle="at.wtioit.intellij.plugins.OdooBundle"
+                     key="INSP.NAME.missing.po.msgid" groupKey="INSP.GROUP.odoo"
+                     enabledByDefault="true" level="WARNING"
+                     implementationClass="at.wtioit.intellij.plugins.odoo.inspections.MissingPoMsgIdInspection"/>
+  </extensions>
+</idea-plugin>
