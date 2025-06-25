@@ -6,7 +6,7 @@
   <description><![CDATA[
       <p>This plugin enhances PyCharm/IntelliJ IDEA with advanced autocompletion and navigation features for Odoo development.</p>
       <p><strong>Core Features:</strong></p>
-      <ul>
+        <ul>
         <li><strong>Search Everywhere:</strong> Instantly find Odoo modules, models, and records.</li>
         <li><strong>Model Hierarchy:</strong> View Odoo model inheritance in the type hierarchy view.</li>
         <li><strong>Python Imports:</strong> Autocomplete and resolve <code>odoo.addons.*</code> imports.</li>
@@ -15,7 +15,7 @@
         <li><strong>JS Modules:</strong> Autocomplete and navigate to JavaScript modules defined with <code>odoo.define</code>.</li>
         <li><strong>PO/POT Files:</strong> Autocomplete and navigate to <code>msgid</code> entries from translation files.</li>
         <li><strong>Navigation:</strong> Go To Declaration support for models, records, JS modules, and PO `msgid`s.</li>
-      </ul>
+        </ul>
       <p>The plugin is designed for performance and integrates smoothly into the IDE, providing a seamless experience for Odoo developers across all supported versions.</p>
     ]]>
   </description>
