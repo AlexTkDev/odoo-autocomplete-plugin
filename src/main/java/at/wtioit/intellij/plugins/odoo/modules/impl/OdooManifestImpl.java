@@ -23,7 +23,7 @@ public class OdooManifestImpl implements OdooManifest {
     }
 
     @Override
-    public Iterable<OdooModule> getDependencies() {
+    public java.util.Collection<OdooModule> getDependencies() {
         if (dependencyNames == null) return null;
         if (dependencies == null || dependencyNames.size() != dependencies.size()) {
             OdooModuleService moduleService = project.getService(OdooModuleService.class);
@@ -33,7 +33,7 @@ public class OdooManifestImpl implements OdooManifest {
                 if (module != null) {
                     dependencyModules.add(module);
                 } else {
-                    // TODO missing dependency?
+                    // TODO: Missing dependency? Consider warning the user or handling gracefully.
                     dependencyModules.add(new ResolveLaterOdooModuleImpl(dependencyName, project));
                 }
             }

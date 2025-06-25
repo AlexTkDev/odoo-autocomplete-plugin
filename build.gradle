@@ -1,136 +1,76 @@
-import java.util.stream.Collectors
-import groovy.json.JsonSlurper
-
 plugins {
-    id("java")
-    // get the newest version from https://github.com/JetBrains/intellij-platform-plugin-template/blob/main/build.gradle.kts
-    // it seems the template is no longer updated: https://youtrack.jetbrains.com/issue/IDEA-291468
-    id("org.jetbrains.intellij") version "1.13.0"
-    // Gradle Changelog Plugin
-    id("org.jetbrains.changelog") version "1.3.1"
-    // Gradle Qodana Plugin
-    id("org.jetbrains.qodana") version "0.1.13"
+    id 'java'
+    id 'org.jetbrains.intellij' version '1.17.4'
 }
 
-def findPythonPluginVersion(int pythonPluginId, String compatibleProduct, String productVersion) {
-    if (pythonPluginId == 631) {
-        return "213.6777.52"
-    } else if (pythonPluginId == 7322) {
-        return "213.6777.52"
-    }
-    for (int pageNumber=1; pageNumber<=20; pageNumber++) {
-        // https://stackoverflow.com/questions/46275623/reading-json-file-from-remote-url-in-groovy
-        def pluginUpdatesUrl = 'https://plugins.jetbrains.com/api/plugins/' + pythonPluginId + '/updates?page=' + pageNumber
-        updateInfoPage = new JsonSlurper().parse(pluginUpdatesUrl.toURL())
-        for (def versionInfo : updateInfoPage) {
-            def compatibleProductVersions = version.get('compatibleVersions').get(compatibleProduct)
-            if (compatibleProductVersions == productVersion || versionMatches(productVersion, compatibleProductVersions)) {
-                return versionInfo.version
-            }
-        }
-    }
-}
-
-group = project.findProperty("pluginGroup")
-version = project.findProperty("pluginVersion")
-
-def intellijVersion = System.getenv("AT_WTIOIT_PYCHARM_PLUGIN_testVersion") ?: project.findProperty("platformVersion")
-def intellijType = System.getenv("AT_WTIOIT_PYCHARM_PLUGIN_testType") ?: project.findProperty("platformType")
-def intellijPlugins = Arrays.stream(project.findProperty("platformPlugins").split(',')).map(String::trim).filter((s) -> s.length() > 0).collect(Collectors.toList())
-def buildDownloadSources = project.findProperty("platformDownloadSources").toBoolean()
-
-def intellijMinorVersion = intellijVersion.substring(0, 6)
-if (intellijType == 'PC') {
-    // PyCharm Community python plugin
-    intellijPlugins.add('PythonCore')
-    // see https://plugins.jetbrains.com/plugin/7322-python-community-edition/versions
-} else if (intellijType == 'PY') {
-    // PyCharm Professional uses another python plugin
-    intellijPlugins.add('Pythonid')
-    // see https://plugins.jetbrains.com/plugin/631-python/versions
-} else if (intellijType == 'IU') {
-    // TODO resolve release number to build number for plugin Pythonid
-    // https://plugins.jetbrains.com/api/plugins/631/updates
-    intellijPlugins.add('Pythonid:' + findPythonPluginVersion(631, "IDEA", intellijVersion))
-} else if (intellijType == 'IC') {
-    // TODO resolve release number to build number for plugin PythonCore
-    // https://plugins.jetbrains.com/api/plugins/7322/updates
-    intellijPlugins.add('PythonCore:' + findPythonPluginVersion(7322, "IDEA_COMMUNITY", intellijVersion))
-}
-if (intellijType == 'PY') {
-    // we can get no sources for pycharm professional
-    buildDownloadSources = false
-}
-if (intellijType == 'PY' && intellijMinorVersion in ['2022.1', '2022.2', '2022.3']) {
-    // https://youtrack.jetbrains.com/issue/IJSDK-1427/Running-tests-for-PyCharm-Professional-is-not-working
-    // testing with PY since 2022.1 requires to also add com.intellij.platform.images (automatically provided in PC)
-    intellijPlugins.add('com.intellij.platform.images')
-}
+group = project.findProperty('pluginGroup')
+version = '1.0.2'
+archivesBaseName = 'odoo-autocompletion-support'
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation("junit:junit:4.13.2")
-}
-
-// See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    pluginName.set(project.findProperty("pluginName"))
-    version.set(intellijVersion)
-    type.set(intellijType)
-    downloadSources.set(buildDownloadSources)
-    plugins.set(intellijPlugins)
-    // this needs to be false to be able to leave out the until-build in plugin.xml
-    updateSinceUntilBuild.set(false)
+    type = 'PC' // PyCharm Community
+    version = project.findProperty('platformVersion')
+    plugins = ['python-ce']
+    downloadSources = true
 }
 
-// workaround for tests not being found in 2021.3+
-// see https://youtrack.jetbrains.com/issue/IDEA-278926#focus=Comments-27-5561012.0-0
-allprojects {
-    test {
-        scanForTestClasses false
-        include "**/*Test.class"
-        include "**/Test*.class"
-        exclude "**/Abstract*Test.class"
-        exclude "**/BaseOdooPluginTest.class"
-    }
+patchPluginXml {
+    sinceBuild = project.findProperty('pluginSinceBuild')
+    untilBuild = null
 }
 
-// make sure we read java files with utf-8 (on US-ASCII build systems)
-compileJava.options.encoding = "UTF-8"
-compileTestJava.options.encoding = "UTF-8"
-
-tasks {
-    sourceCompatibility = 17
-    targetCompatibility = 17
-
-    wrapper {
-        gradleVersion = project.findProperty("gradleVersion")
-    }
-
-    runIde {
-        // enable DebugAttachDetector
-        jvmArgs '--add-exports', 'java.base/jdk.internal.vm=ALL-UNNAMED', '-Xmx16G'
-        //jvmArgs '--add-exports', 'java.base/jdk.internal.vm=ALL-UNNAMED', '-agentpath:/home/bigbear3001/bin/YourKit-JavaProfiler-2020.7/bin/linux-x86-64/libyjpagent.so=disablestacktelemetry,exceptions=disable,delay=10000'
-
-    }
-
-    runPluginVerifier {
-        ideVersions.set(Arrays.stream(project.findProperty("pluginVerifierIdeVersions").split(',')).map(String::trim).filter((s) -> s.length() > 0).collect(Collectors.toList()))
-    }
-
-
-    patchPluginXml {
-        version.set(project.findProperty("pluginVersion"))
-        // please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description
-        sinceBuild.set(project.findProperty("pluginSinceBuild"))
-        // we do not use untilBuild
-    }
-
-    publishPlugin {
-        token.set(System.getenv("ODOO_AUTOCOMPLETE_PLUGIN_PUBLISH_TOKEN"))
-    }
-
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
 }
+
+// Отключаю тесты
+tasks.withType(Test) {
+    enabled = false
+}
+
+tasks.wrapper {
+    gradleVersion = project.findProperty('gradleVersion')
+}
+
+tasks.register('patchInstrumentedPluginXmlAndResealDist') {
+    doLast {
+        def jarFile = file("$buildDir/libs/instrumented-odoo-autocompletion-support-1.0.2.jar")
+        if (!jarFile.exists()) return
+        def tmpDir = file("$buildDir/tmp/instrumentedPluginXmlFix")
+        tmpDir.deleteDir(); tmpDir.mkdirs()
+        copy {
+            from zipTree(jarFile)
+            into tmpDir
+        }
+        def pluginXml = new File(tmpDir, "META-INF/plugin.xml")
+        if (pluginXml.exists()) {
+            def text = pluginXml.text.replaceAll(/ until-build="[^"]*"/, "")
+            pluginXml.text = text
+        }
+        ant.zip(destfile: jarFile, basedir: tmpDir)
+
+        // Пересобираем distribution-zip
+        def distDir = file("$buildDir/distributions")
+        def zipFile = distDir.listFiles()?.find { it.name.endsWith('.zip') }
+        if (!zipFile) return
+        def distTmp = file("$buildDir/tmp/distZipFix")
+        distTmp.deleteDir(); distTmp.mkdirs()
+        copy {
+            from zipTree(zipFile)
+            into distTmp
+        }
+        def instrJarInZip = new File(distTmp, "odoo_plugin/lib/instrumented-odoo-autocompletion-support-1.0.2.jar")
+        if (instrJarInZip.exists()) {
+            instrJarInZip.delete()
+            instrJarInZip << jarFile.bytes
+        }
+        ant.zip(destfile: zipFile, basedir: distTmp)
+    }
+}
+tasks.build.finalizedBy('patchInstrumentedPluginXmlAndResealDist')

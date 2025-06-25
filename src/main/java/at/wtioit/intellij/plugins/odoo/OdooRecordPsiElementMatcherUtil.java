@@ -3,7 +3,6 @@ package at.wtioit.intellij.plugins.odoo;
 import at.wtioit.intellij.plugins.odoo.records.OdooRecord;
 import at.wtioit.intellij.plugins.odoo.records.index.OdooRecordImpl;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiPlainText;
 import com.intellij.psi.xml.*;
 import com.jetbrains.python.psi.*;
@@ -21,7 +20,7 @@ public interface OdooRecordPsiElementMatcherUtil {
     List<String> ODOO_RECORD_REF_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(
             "ref",
             "inherit_id",
-            "groups", // TODO handle comma seperated groups
+            "groups", // TODO: Handle comma separated groups
             "action",
             "t-call",
             "t-call-assets",
@@ -35,7 +34,7 @@ public interface OdooRecordPsiElementMatcherUtil {
     ));
 
     Map<String, List<String>> ODOO_RECORD_REF_ATTRIBUTES_TAGS_FALSE_POSITIVES = Map.of(
-            // TODO tree and kanban actions need to be available as methods in the model
+            // TODO: Tree and kanban actions need to be available as methods in the model
             "action", Collections.unmodifiableList(Arrays.asList("form", "tree", "kanban", "widget", "div"))
     );
 
@@ -96,109 +95,6 @@ public interface OdooRecordPsiElementMatcherUtil {
             }
         }
         return false;
-    }
-
-    static HashMap<String, OdooRecord> getRecordsFromFile(@NotNull PsiFile file) {
-        return getRecordsFromFile(file, (record) -> true, Integer.MAX_VALUE, () -> file.getVirtualFile().getPath());
-    }
-
-    static HashMap<String, OdooRecord> getRecordsFromFile(@NotNull PsiFile file, String path) {
-        return getRecordsFromFile(file, (record) -> true, Integer.MAX_VALUE, () -> path);
-    }
-
-    static HashMap<String, OdooRecord> getRecordsFromFile(@NotNull PsiFile file, Function<OdooRecord, Boolean> function, int limit) {
-        return getRecordsFromFile(file, function, limit, () -> file.getVirtualFile().getPath());
-    }
-
-    static HashMap<String, OdooRecord> getRecordsFromFile(@NotNull PsiFile file, Function<OdooRecord, Boolean> matches, int limit, Supplier<String> pathSupplier) {
-        HashMap<String, OdooRecord> records = new HashMap<>();
-        if (file instanceof XmlFile) {
-            PsiElementsUtil.walkTree(file, (element) -> {
-                if (element instanceof XmlTag) {
-                    XmlTag tag = (XmlTag) element;
-                    if (tag.getNamespace().contains("http://relaxng.com/ns/")) {
-                        // skip investigating relaxng schemas for odoo models
-                        return PsiElementsUtil.TREE_WALING_SIGNAL.SKIP_CHILDREN;
-                    } else if ("odoo".equals(tag.getName()) || "openerp".equals(tag.getName())) {
-                        records.putAll(getRecordsFromOdooTag(tag, pathSupplier.get(), matches, limit));
-                        return PsiElementsUtil.TREE_WALING_SIGNAL.SKIP_CHILDREN;
-                    } else if ("templates".equals(tag.getName()) || "template".equals(tag.getName())) {
-                        // TODO templates should go to a different index (they have no real xmlid)
-                        records.putAll(getRecordsFromTemplateTag(tag, pathSupplier.get(), matches, limit));
-                    }
-                    // investigate children if we need more records
-                    return PsiElementsUtil.TREE_WALING_SIGNAL.investigate(records.size() < limit);
-                } else if (element instanceof XmlDocument) {
-                    // investigate children if we need more records
-                    return PsiElementsUtil.TREE_WALING_SIGNAL.investigate(records.size() < limit);
-                }
-                return PsiElementsUtil.TREE_WALING_SIGNAL.SKIP_CHILDREN;
-            }, XmlElement.class, 3);
-        } else if (file instanceof PyFile && "__manifest__.py".equals(file.getName())) {
-            PsiElementsUtil.walkTree(file, (psiElement) -> {
-                if (psiElement instanceof PyKeyValueExpression) {
-                    PyExpression keyExpression = ((PyKeyValueExpression) psiElement).getKey();
-                    String key = getStringValueForValueChild(keyExpression);
-                    if ("assets".equals(key)) {
-                        // investigate children if we need more records
-                        return PsiElementsUtil.TREE_WALING_SIGNAL.investigate(records.size() < limit);
-                    } else {
-                        // TODO move to isOdooRecord...
-                        PyKeyValueExpression parentKeyValueExpression = findParent(psiElement, PyKeyValueExpression.class, 2);
-                        if (parentKeyValueExpression != null) {
-                            PyExpression parentKeyExpression = parentKeyValueExpression.getKey();
-                            String parentKey = getStringValueForValueChild(parentKeyExpression);
-                            if ("assets".equals(parentKey)) {
-                                OdooRecord assetBundleRecord = getAssetBundleRecord(key, pathSupplier.get(), psiElement);
-                                if (matches.apply(assetBundleRecord)) {
-                                    records.put(key, assetBundleRecord);
-                                }
-                            }
-                        }
-                    }
-                    return TREE_WALING_SIGNAL.SKIP_CHILDREN;
-                } else if (psiElement instanceof PyExpressionStatement || psiElement instanceof PyDictLiteralExpression) {
-                    // continue investigating the main expression
-                    // continue investigating any dict expressions (containing PyKeyValueExpressions)
-                    // investigate children if we need more records
-                    return PsiElementsUtil.TREE_WALING_SIGNAL.investigate(records.size() < limit);
-                }
-                return PsiElementsUtil.TREE_WALING_SIGNAL.SKIP_CHILDREN;
-            }, PsiElement.class, 5);
-        } else if ("csv".equals(file.getVirtualFile().getExtension())) {
-            records.putAll(getRecordsFromCsvFile(file, pathSupplier.get(), matches, limit));
-        }
-        return records;
-    }
-
-    static HashMap<String, OdooRecord> getRecordsFromCsvFile(PsiFile file, String path) {
-        return getRecordsFromCsvFile(file, path, (r) -> true, Integer.MAX_VALUE);
-    }
-
-    static HashMap<String, OdooRecord> getRecordsFromCsvFile(PsiFile file, String path, Function<OdooRecord, Boolean> matches, int limit) {
-        String modelName = file.getName().replaceFirst(".csv$", "");
-        HashMap<String, OdooRecord> result = new HashMap<>();
-        PsiElement firstChild = file.getFirstChild();
-        if (firstChild instanceof PsiPlainText) {
-            // TODO replace with a proper csv parser
-            String[] lines = firstChild.getText().split("\r?\n");
-            if (lines.length > 1) {
-                String[] columns = csvLine(lines[0]);
-                for (int i = 1; i < lines.length && result.size() < limit; i++) {
-                    String line = lines[i];
-                    OdooRecord record = OdooRecordImpl.getFromCsvLine(modelName, columns, csvLine(line), path, firstChild);
-                    // TODO check module name
-                    if (record != null && matches.apply(record)) {
-                        if (record.getXmlId() != null) {
-                            result.put(record.getXmlId(), record);
-                        } else {
-                            result.put(NULL_XML_ID_KEY + "." + record.getId(), record);
-                        }
-                    }
-                }
-            }
-        }
-        return result;
     }
 
     static String[] csvLine(String line) {
@@ -302,20 +198,6 @@ public interface OdooRecordPsiElementMatcherUtil {
             XmlAttribute attribute = PsiElementsUtil.findParent(psiElement, XmlAttribute.class, 2);
             if (attribute != null && "action".equals(attribute.getName())) {
                 return true;
-            }
-        }
-        return false;
-    }
-
-    static boolean isOdooJsPsiElement(PsiElement psiElement) {
-        // For JS files, check if it's a string inside odoo.define() or require()
-        if (psiElement.getLanguage().isKindOf("JavaScript")) {
-            if (psiElement.getParent() instanceof com.intellij.lang.javascript.psi.JSStringLiteralExpression) {
-                com.intellij.lang.javascript.psi.JSCallExpression callExpression = findParent(psiElement, com.intellij.lang.javascript.psi.JSCallExpression.class, 5);
-                if (callExpression != null && callExpression.getMethodExpression() != null) {
-                    String text = callExpression.getMethodExpression().getText();
-                    return text.endsWith("odoo.define") || text.endsWith("require");
-                }
             }
         }
         return false;

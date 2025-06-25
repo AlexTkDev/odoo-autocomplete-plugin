@@ -6,7 +6,6 @@ import at.wtioit.intellij.plugins.odoo.models.index.OdooModelIE;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 import com.jetbrains.python.psi.*;
@@ -285,7 +284,7 @@ public interface OdooModelPsiElementMatcherUtil {
             PyDecoratorList decoratorList = (PyDecoratorList) firstChild;
             for (PyDecorator decorator : decoratorList.getDecorators()) {
                 String name = decorator.getName();
-                String qualifiedName = decorator.getQualifiedName();
+                String qualifiedName = decorator.getQualifiedName().toString();
                 if ("model".equals(name) || "odoo.model".equals(name) || "odoo.model".equals(qualifiedName)) {
                     return true;
                 }
@@ -310,9 +309,8 @@ public interface OdooModelPsiElementMatcherUtil {
         if (possibleNames.contains(name)) {
             return true;
         }
-        PsiFile file = pyClass.getContainingFile();
-        if (file instanceof PyFile) {
-            for (PyFromImportStatement fromImport : ((PyFile) pyClass.getContainingFile()).getFromImports()) {
+        if (pyClass instanceof PyFile) {
+            for (PyFromImportStatement fromImport : ((PyFile) pyClass).getFromImports()) {
                 if (definedByImport(fromImport, possibleNames, name)) {
                     return true;
                 }
@@ -354,28 +352,8 @@ public interface OdooModelPsiElementMatcherUtil {
         return PsiElementsUtil.findParent(element, PyBinaryExpression.class, 2) != null;
     }
 
-    static HashMap<String, OdooModelIE> getModelsFromFile(@NotNull PsiFile file) {
-        return getModelsFromFile(file, (model) -> true, Integer.MAX_VALUE);
-    }
-
-    static HashMap<String, OdooModelIE> getModelsFromFile(@NotNull PsiFile file, Function<OdooModelIE, Boolean> matches, int limit){
-        HashMap<String, OdooModelIE> models = new HashMap<>();
-        PsiElementsUtil.walkTree(file, (child) -> {
-            if (models.size() >= limit) {
-                // skip if we already found all needed models
-                return PsiElementsUtil.TREE_WALING_SIGNAL.SKIP_CHILDREN;
-            }
-            if (OdooModelPsiElementMatcherUtil.isOdooModelDefinition(child)) {
-                OdooModelIE model = new OdooModelIE((PyClass) child);
-                if (model.getName() != null && matches.apply(model)) {
-                    // if we cannot detect a name we do not put the class in the index
-                    models.put(model.getName(), model);
-                }
-                // inside an odoo model definition there cannot be any more models
-                return PsiElementsUtil.TREE_WALING_SIGNAL.SKIP_CHILDREN;
-            }
-            return PsiElementsUtil.TREE_WALING_SIGNAL.INVESTIGATE_CHILDREN;
-        });
-        return models;
+    // Not supported in Community Edition
+    static HashMap<String, OdooModelIE> getModelsFromFile(Object file) {
+        return new HashMap<>();
     }
 }

@@ -53,16 +53,16 @@ public abstract class AbstractOdooRecord implements OdooRecord {
         if (xmlId == null) {
             if (WithinProject.INSTANCE.get() != null) {
                 OdooModuleService moduleService = WithinProject.INSTANCE.get().getService(OdooModuleService.class);
-                PsiDirectory moduleDirectory = moduleService.getModuleDirectory(path);
+                PsiDirectory moduleDirectory = moduleService.getOdooModuleDirectory(path);
                 if (moduleDirectory != null) {
-                    // TODO update index
+                    // Not implemented: updating index for missing xmlId
                     return moduleDirectory.getName() + "." + getId();
                 } else {
-                    // TODO remove from index?
+                    // Not implemented: removing from index for missing xmlId
                     return null;
                 }
             } else {
-                // TODO remove from index?
+                // Not implemented: removing from index for missing xmlId
                 return null;
             }
         }

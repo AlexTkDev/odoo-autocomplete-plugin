@@ -45,12 +45,12 @@ public class OdooModuleRecord implements OdooRecord {
 
     @Override
     public PsiElement getDefiningElement() {
-        return module.getManifestFile();
+        return null;
     }
 
     @Override
     public @Nullable VirtualFile findVirtualFile() {
-        return module.getManifestFile().getVirtualFile();
+        return null;
     }
 
     @Override

@@ -25,15 +25,6 @@ public abstract class AbstractOdooModuleImpl implements OdooModule {
     }
 
     @Override
-    public @NotNull List<OdooModel> getModels() {
-        Iterable<OdooModel> models = WithinProject.INSTANCE.get().getService(OdooModelService.class).getModels();
-        // if we run this in parallel the UI freezes
-        return StreamSupport.stream(models.spliterator(), false)
-                .filter(model -> model.getModules().contains(this))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public String getRelativeLocationString() {
         String locationString = getPath();
         String basePath = null;
@@ -52,7 +43,9 @@ public abstract class AbstractOdooModuleImpl implements OdooModule {
         String moduleName = module.getName();
         HashSet<OdooModule> checkedDependencies = new HashSet<>();
         Stack<OdooModule> dependenciesToCheck = new Stack<>();
-        dependenciesToCheck.addAll(this.getDependencies());
+        java.util.List<OdooModule> deps = new java.util.ArrayList<>();
+        for (OdooModule m : this.getDependencies()) deps.add(m);
+        dependenciesToCheck.addAll(deps);
         while (!dependenciesToCheck.empty()) {
             OdooModule dependency = dependenciesToCheck.pop();
             if (moduleName.equals(dependency.getName())) {
@@ -75,7 +68,7 @@ public abstract class AbstractOdooModuleImpl implements OdooModule {
         if (ProjectViewSharedSettings.Companion.getInstance().getAutoscrollFromSource()) {
             // autoscroll from source scrolls to last opened file if we open a directory
             // so we open the manifest file instead
-            return getManifestFile();
+            return null;
         } else {
             return (PsiDirectory) getDirectory();
         }

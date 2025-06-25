@@ -52,7 +52,7 @@ public class ResolveLaterOdooModuleImpl implements OdooModule {
             module = moduleService.findModule(moduleName);
         }
         if (module == null) {
-            // TODO missing dependency?
+            // TODO: Missing dependency? Consider warning the user or handling gracefully.
             throw new FileNotFoundException("Cannot find module for " + moduleName);
         }
     }
@@ -62,7 +62,7 @@ public class ResolveLaterOdooModuleImpl implements OdooModule {
         try {
             tryResolveOdooModule();
         } catch (FileNotFoundException e) {
-            // TODO NotImplementedException?
+            // TODO: NotImplementedException? Consider returning a default path or warning the user.
             throw new IllegalStateException();
         }
         return module.getPath();
@@ -73,7 +73,7 @@ public class ResolveLaterOdooModuleImpl implements OdooModule {
         try {
             tryResolveOdooModule();
         } catch (FileNotFoundException e) {
-            // TODO NotImplementedException?
+            // TODO: NotImplementedException? Consider returning null or warning the user.
             return null;
         }
         return module.getDirectory();
@@ -84,7 +84,7 @@ public class ResolveLaterOdooModuleImpl implements OdooModule {
         try {
             tryResolveOdooModule();
         } catch (FileNotFoundException e) {
-            // TODO custom icon for unresolved modules or NotImplementedException?
+            // TODO: Custom icon for unresolved modules or NotImplementedException? Consider returning a default icon.
             return null;
         }
         return module.getIcon();
@@ -111,35 +111,14 @@ public class ResolveLaterOdooModuleImpl implements OdooModule {
     }
 
     @Override
-    public Iterable<OdooModel> getModels() {
-        try {
-            tryResolveOdooModule();
-        } catch (FileNotFoundException e) {
-            return Collections.emptyList();
-        }
-        return module.getModels();
-    }
-
-    @Override
     public boolean dependsOn(@NotNull OdooModule possibleDependency) {
         try {
             tryResolveOdooModule();
         } catch (FileNotFoundException e) {
-            // TODO give a hint to the user that we cannot find the module (and he should add it to the workspace)
+            // TODO: Give a hint to the user that we cannot find the module (and they should add it to the workspace)
             return false;
         }
         return module.dependsOn(possibleDependency);
-    }
-
-    @Override
-    public PsiFile getManifestFile() {
-        try {
-            tryResolveOdooModule();
-        } catch (FileNotFoundException e) {
-            // TODO give a hint to the user that we cannot find the module (and he should add it to the workspace)
-            return null;
-        }
-        return module.getManifestFile();
     }
 
     @Override
@@ -147,7 +126,7 @@ public class ResolveLaterOdooModuleImpl implements OdooModule {
         try {
             tryResolveOdooModule();
         } catch (FileNotFoundException e) {
-            // TODO give a hint to the user that we cannot find the module (and he should add it to the workspace)
+            // TODO: Give a hint to the user that we cannot find the module (and they should add it to the workspace)
             return null;
         }
         return module.getNavigationItem();

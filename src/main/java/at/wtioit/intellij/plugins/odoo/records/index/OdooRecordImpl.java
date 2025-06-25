@@ -20,7 +20,7 @@ public class OdooRecordImpl extends AbstractOdooRecord {
     private static final Map<String, String> MODELS_FOR_TAG_NAMES = new HashMap<>();
     static {
         // from tools/convert.py
-        MODELS_FOR_TAG_NAMES.put("template", "ir.ui.view"); // todo inside themes this is theme.ir.ui.view
+        MODELS_FOR_TAG_NAMES.put("template", "ir.ui.view"); // TODO: inside themes this is theme.ir.ui.view
         MODELS_FOR_TAG_NAMES.put("menuitem", "ir.ui.menu");
         MODELS_FOR_TAG_NAMES.put("report", "ir.actions.report");
         MODELS_FOR_TAG_NAMES.put("act_window", "ir.actions.act_window");
@@ -102,7 +102,7 @@ public class OdooRecordImpl extends AbstractOdooRecord {
             if (!xmlId.contains(".")) {
                 xmlId = null;
             }
-            // TODO maybe make a fast guess for the module name from path
+            // Not implemented: guessing module name from path
             return new OdooRecordImpl(id, xmlId, modelName, path, definingElement);
         }
         return null;

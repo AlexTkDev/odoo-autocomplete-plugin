@@ -4,13 +4,7 @@ import com.intellij.psi.PsiElement;
 
 public interface OdooModelService {
 
-    Iterable<OdooModel> getModels();
-
-    OdooModel getModel(String modelName);
-
-    Iterable<String> getModelNames();
-
-    OdooModel getModelForElement(PsiElement psiElement);
+    // Not supported in Community Edition
 
     boolean hasModel(String name);
 }

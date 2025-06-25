@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
 public interface OdooRecordService {
-    //TODO use iterable for memory consumption
+    // TODO: Consider using Iterable for better memory consumption if the number of records is large
     java.util.stream.Stream<String> getXmlIds();
 
     OdooRecord getRecord(String xmlId);

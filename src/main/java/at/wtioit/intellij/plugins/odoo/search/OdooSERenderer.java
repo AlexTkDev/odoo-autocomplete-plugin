@@ -12,7 +12,7 @@ public class OdooSERenderer extends PsiElementListCellRenderer<OdooSEResult> {
 
     @Override
     protected @Nullable String getContainerText(OdooSEResult element, String name) {
-        // TODO shorten if necessary
+        // TODO: Shorten if necessary
         return element.getLocationString();
     }
 

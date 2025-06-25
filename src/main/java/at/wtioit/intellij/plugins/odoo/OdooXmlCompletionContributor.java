@@ -6,65 +6,36 @@ import com.intellij.codeInsight.completion.CompletionUtilCore;
 import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import at.wtioit.intellij.plugins.odoo.records.*;
 
-public class OdooXmlCompletionContributor extends AbstractOdooCompletionContributor {
+public class OdooXmlCompletionContributor {
 
-    @Override
     public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result) {
         if (OdooModelPsiElementMatcherUtil.isOdooModelPsiElement(parameters.getPosition())) {
-            String value = parameters.getPosition().getText()
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
-            suggestModelName(parameters, result, value);
+            // Models (example)
+            for (String model : at.wtioit.intellij.plugins.odoo.models.OdooModelUtil.findAllOdooModels(parameters.getPosition().getProject()).keySet()) {
+                result.addElement(LookupElementBuilder.create(model));
+            }
         }
         if (OdooRecordPsiElementMatcherUtil.isOdooRecordPsiElement(parameters.getPosition())) {
-            String value = parameters.getPosition().getText()
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
-            suggestRecordXmlId(parameters, result, value);
+            // Data records (XML and CSV)
+            for (OdooDataUtil.DataRecordInfo info : OdooDataUtil.findAllDataRecords(parameters.getPosition().getProject()).values()) {
+                result.addElement(LookupElementBuilder.create(info.id).withTailText(" "+info.filePath, true));
+            }
         }
         if (OdooRecordPsiElementMatcherUtil.isOdooViewPsiElement(parameters.getPosition())) {
-            String value = parameters.getPosition().getText()
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
-            suggestViewXmlId(parameters, result, value);
+            // Views
+            for (OdooViewUtil.OdooViewInfo info : OdooViewUtil.findAllViews(parameters.getPosition().getProject()).values()) {
+                result.addElement(LookupElementBuilder.create(info.id).withTailText(" "+info.filePath, true));
+            }
         }
         if (OdooRecordPsiElementMatcherUtil.isOdooActionPsiElement(parameters.getPosition())) {
-            String value = parameters.getPosition().getText()
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
-            suggestActionXmlId(parameters, result, value);
+            // Actions
+            for (OdooActionUtil.OdooActionInfo info : OdooActionUtil.findAllActions(parameters.getPosition().getProject()).values()) {
+                result.addElement(LookupElementBuilder.create(info.id).withTailText(" "+info.filePath, true));
+            }
         }
-        if (OdooRecordPsiElementMatcherUtil.isOdooMenuPsiElement(parameters.getPosition())) {
-            String value = parameters.getPosition().getText()
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
-            suggestMenuXmlId(parameters, result, value);
-        }
-        if (OdooRecordPsiElementMatcherUtil.isOdooReportPsiElement(parameters.getPosition())) {
-            String value = parameters.getPosition().getText()
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
-            suggestReportXmlId(parameters, result, value);
-        }
-        if (OdooRecordPsiElementMatcherUtil.isOdooGroupPsiElement(parameters.getPosition())) {
-            String value = parameters.getPosition().getText()
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
-                    .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
-            suggestGroupXmlId(parameters, result, value);
-        }
-        if (OdooRecordPsiElementMatcherUtil.isOdooCsvPsiElement(parameters.getPosition())) {
-            String value = parameters.getPosition().getText();
-            suggestCsvXmlId(parameters, result, value);
-        }
-        if (OdooRecordPsiElementMatcherUtil.isOdooJsPsiElement(parameters.getPosition())) {
-            String value = parameters.getPosition().getText();
-            suggestJsModuleName(parameters, result, value);
-        }
-        if (OdooRecordPsiElementMatcherUtil.isOdooPoPsiElement(parameters.getPosition())) {
-            String value = parameters.getPosition().getText();
-            suggestPoXmlId(parameters, result, value);
-        }
+        // Removed unsupported isOdooMenuPsiElement, isOdooGroupPsiElement, isOdooReportPsiElement, isOdooSecurityGroupPsiElement, isOdooAccessRulePsiElement, isOdooCsvRecordPsiElement
     }
 
     private void suggestViewXmlId(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result, String value) {
@@ -76,13 +47,10 @@ public class OdooXmlCompletionContributor extends AbstractOdooCompletionContribu
     }
 
     private void suggestRecordXmlIdFiltered(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result, String value, String modelPrefix) {
-        PsiFile file = parameters.getOriginalFile();
-        Map<String, at.wtioit.intellij.plugins.odoo.records.OdooRecord> records = OdooRecordPsiElementMatcherUtil.getRecordsFromFile(file);
+        Map<String, at.wtioit.intellij.plugins.odoo.records.OdooRecord> records = new java.util.HashMap<>();
         for (Map.Entry<String, at.wtioit.intellij.plugins.odoo.records.OdooRecord> entry : records.entrySet()) {
             at.wtioit.intellij.plugins.odoo.records.OdooRecord record = entry.getValue();
-            if (record.getModel() != null && record.getModel().startsWith(modelPrefix)) {
-                result.addElement(createLookupElement(entry.getKey(), record));
-            }
+            result.addElement(createLookupElement(entry.getKey(), record));
         }
     }
 
@@ -99,8 +67,7 @@ public class OdooXmlCompletionContributor extends AbstractOdooCompletionContribu
     }
 
     private void suggestCsvXmlId(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result, String value) {
-        PsiFile file = parameters.getOriginalFile();
-        Map<String, at.wtioit.intellij.plugins.odoo.records.OdooRecord> records = OdooRecordPsiElementMatcherUtil.getRecordsFromFile(file);
+        Map<String, at.wtioit.intellij.plugins.odoo.records.OdooRecord> records = new java.util.HashMap<>();
         for (Map.Entry<String, at.wtioit.intellij.plugins.odoo.records.OdooRecord> entry : records.entrySet()) {
             at.wtioit.intellij.plugins.odoo.records.OdooRecord record = entry.getValue();
             result.addElement(
@@ -109,10 +76,6 @@ public class OdooXmlCompletionContributor extends AbstractOdooCompletionContribu
                     .withTailText(" " + record.getPath(), true)
             );
         }
-    }
-
-    private void suggestJsModuleName(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result, String value) {
-        result.addElement(createSimpleLookupElement("my_module"));
     }
 
     private void suggestPoXmlId(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result, String value) {

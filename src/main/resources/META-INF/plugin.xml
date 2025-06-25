@@ -1,42 +1,48 @@
 <idea-plugin>
-  <id>at.wtioit.intellij.plugins.odoo</id>
-  <name>Odoo Autocomplete Plugin</name>
-  <vendor email="admin.jetbrains-plugins@service.wt-io-it.at" url="http://www.wt-io-it.at">AlexTkDev</vendor>
-
+  <id>odoo.autocomplete.support.community</id>
+  <name>Odoo Autocompletion Support</name>
   <description><![CDATA[
-      <p>This plugin enhances PyCharm/IntelliJ IDEA with advanced autocompletion and navigation features for Odoo development.</p>
-      <p><strong>Core Features:</strong></p>
-        <ul>
-        <li><strong>Search Everywhere:</strong> Instantly find Odoo modules, models, and records.</li>
-        <li><strong>Model Hierarchy:</strong> View Odoo model inheritance in the type hierarchy view.</li>
-        <li><strong>Python Imports:</strong> Autocomplete and resolve <code>odoo.addons.*</code> imports.</li>
-        <li><strong>Model Names:</strong> Autocomplete model names in <code>_name</code>, <code>_inherit</code>, and relational fields (Many2one, etc.).</li>
-        <li><strong>Record IDs:</strong> Autocomplete record IDs from XML and CSV files.</li>
-        <li><strong>JS Modules:</strong> Autocomplete and navigate to JavaScript modules defined with <code>odoo.define</code>.</li>
-        <li><strong>PO/POT Files:</strong> Autocomplete and navigate to <code>msgid</code> entries from translation files.</li>
-        <li><strong>Navigation:</strong> Go To Declaration support for models, records, JS modules, and PO `msgid`s.</li>
-        </ul>
-      <p>The plugin is designed for performance and integrates smoothly into the IDE, providing a seamless experience for Odoo developers across all supported versions.</p>
-    ]]>
-  </description>
+    <h2>Odoo Autocompletion Support</h2>
+    <p>A modern, production-ready plugin for PyCharm Community Edition and IntelliJ IDEA, designed to supercharge Odoo development.</p>
+    <ul>
+      <li><b>Full Autocompletion:</b> Models, fields, XML-IDs, manifests, and more in Python and XML.</li>
+      <li><b>Go to Declaration:</b> Instantly navigate to models, fields, records, and references.</li>
+      <li><b>Inspections & Quickfixes:</b> For missing models, records, and manifest errors.</li>
+      <li><b>Odoo-specific Code Generation:</b> Fast creation of Odoo models and records.</li>
+      <li><b>Documentation Popups:</b> Inline Odoo docs for models and fields.</li>
+      <li><b>Manifest & Security Support:</b> Navigation and validation for manifest and security files.</li>
+      <li><b>Marketplace-ready:</b> All code and UI in English, ready for JetBrains Marketplace.</li>
+      <li><b>No Ultimate dependencies, no license checks, fully open source.</b></li>
+    </ul>
+    <p>
+      <b>Repository:</b> <a href="https://github.com/AlexTkDev/odoo-autocomplete-plugin">github.com/AlexTkDev/odoo-autocomplete-plugin</a><br/>
+      <b>Documentation:</b> <a href="https://github.com/AlexTkDev/odoo-autocomplete-plugin/blob/master/documentation/README.md">Full documentation</a><br/>
+      <b>Issues & Feedback:</b> <a href="https://github.com/AlexTkDev/odoo-autocomplete-plugin/issues">GitHub Issues</a>
+    </p>
+    <p><b>License:</b> MIT License. Copyright (c) 2024 AlexTkDev.</p>
+    <p><i>Odoo® is a registered trademark of Odoo S.A. This plugin is an independent open-source project and is not affiliated with Odoo S.A.</i></p>
+  ]]></description>
+  <vendor url="https://github.com/AlexTkDev/odoo-autocomplete-plugin">AlexTkDev</vendor>
+  <version>1.0.2</version>
+
   <idea-version since-build="251" />
 
   <change-notes><![CDATA[
-      <h3>Version 0.7.0</h3>
-      <ul>
-        <li><b>Feature:</b> Added full support for JavaScript module autocompletion and navigation (<code>odoo.define</code>).</li>
-        <li><b>Feature:</b> Added full support for PO/POT file <code>msgid</code> autocompletion and navigation.</li>
-        <li><b>Feature:</b> Added inspections for missing JS modules and PO <code>msgid</code>s.</li>
-        <li><b>Update:</b> Plugin renamed to "Odoo Autocomplete Plugin".</li>
-        <li><b>Update:</b> Compatibility updated for IntelliJ/PyCharm 2025.1 and newer.</li>
-        <li><b>Refactor:</b> Translated codebase and documentation to English.</li>
-      </ul>
-    ]]>
+    <h3>What's New in 1.0.2</h3>
+    <ul>
+      <li><b>Full Odoo model, field, and record autocompletion</b> in Python and XML.</li>
+      <li><b>Go to declaration</b> for models, fields, XML-IDs, and manifest keys.</li>
+      <li><b>Inspections and quickfixes</b> for missing models, records, and manifest errors.</li>
+      <li><b>Odoo manifest and security file support</b> with navigation and validation.</li>
+      <li><b>Advanced code generation</b> for Odoo models and records.</li>
+      <li>Rebranded, modernized, and fully compatible with PyCharm Community 2025.1+.</li>
+      <li>All code and UI in English, ready for JetBrains Marketplace.</li>
+    </ul>
+  ]]>
   </change-notes>
 
   <depends>com.intellij.modules.platform</depends>
-  <depends>com.intellij.modules.python</depends>
-  <depends>com.intellij.lang.javascript</depends>
+  <depends>JavaScript</depends>
 
   <extensions>
     <localInspection language="XML" shortName="MissingRecordDefinitionXml" bundle="at.wtioit.intellij.plugins.OdooBundle"
@@ -55,5 +61,21 @@
                      key="INSP.NAME.missing.po.msgid" groupKey="INSP.GROUP.odoo"
                      enabledByDefault="true" level="WARNING"
                      implementationClass="at.wtioit.intellij.plugins.odoo.inspections.MissingPoMsgIdInspection"/>
+    <!-- Odoo Model Completion Contributor (Python) -->
+    <completion.contributor language="Python" implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooModelCompletionContributor"/>
+    <!-- Odoo Model Completion Contributor (XML) -->
+    <completion.contributor language="XML" implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooXmlModelCompletionContributor"/>
+    <!-- Odoo Manifest Completion Contributor -->
+    <completion.contributor language="Python" implementationClass="at.wtioit.intellij.plugins.odoo.OdooManifestCompletionContributor"/>
+    <!-- Odoo Model Goto Declaration Handler -->
+    <gotoDeclarationHandler implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooModelGoToDeclarationHandler"/>
+    <!-- Odoo Model Inspection -->
+    <localInspection implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooModelInspection"/>
+    <!-- Odoo Model QuickFix -->
+    <localQuickFix implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooModelQuickFix"/>
+    <!-- Odoo Model Template Generator -->
+    <intentionAction implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooModelTemplateGenerator"/>
+    <!-- Odoo Documentation Provider -->
+    <documentationProvider implementationClass="at.wtioit.intellij.plugins.odoo.OdooDocumentationProvider"/>
   </extensions>
 </idea-plugin>

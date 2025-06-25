@@ -2,7 +2,6 @@ package at.wtioit.intellij.plugins.odoo.modules.impl;
 
 import at.wtioit.intellij.plugins.odoo.modules.OdooManifest;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.jetbrains.python.psi.PyExpressionStatement;
 import com.jetbrains.python.psi.PyListLiteralExpression;
 import com.jetbrains.python.psi.PyStringLiteralExpression;
@@ -14,8 +13,10 @@ import java.util.List;
 
 public class OdooManifestParser {
 
+    // Not supported in Community Edition
+
     @Contract(pure = true)
-    public static @Nullable OdooManifest parse(@Nullable PsiFile manifestFile){
+    public static @Nullable OdooManifest parse(@Nullable PsiElement manifestFile){
         if (manifestFile != null) {
             PyListLiteralExpression dependenciesList = getDependenciesList(getManifestExpression(manifestFile));
             List<String> dependencies = new ArrayList<>();
@@ -31,7 +32,7 @@ public class OdooManifestParser {
     }
 
     @Contract(value = "null -> null", pure = true)
-    private static PyExpressionStatement getManifestExpression(PsiFile manifestFile){
+    private static PyExpressionStatement getManifestExpression(PsiElement manifestFile){
         if (manifestFile == null) return null;
         for (PsiElement element : manifestFile.getChildren()){
             if (element instanceof PyExpressionStatement){

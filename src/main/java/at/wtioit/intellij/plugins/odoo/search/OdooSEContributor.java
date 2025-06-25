@@ -7,7 +7,6 @@ import at.wtioit.intellij.plugins.odoo.models.OdooModelService;
 import at.wtioit.intellij.plugins.odoo.models.search.OdooModelPsiElement;
 import at.wtioit.intellij.plugins.odoo.modules.OdooModule;
 import at.wtioit.intellij.plugins.odoo.modules.OdooModuleService;
-import at.wtioit.intellij.plugins.odoo.modules.search.OdooModulePsiElement;
 import at.wtioit.intellij.plugins.odoo.records.OdooRecord;
 import at.wtioit.intellij.plugins.odoo.records.OdooRecordService;
 import at.wtioit.intellij.plugins.odoo.records.search.OdooRecordPsiElement;
@@ -68,21 +67,8 @@ public class OdooSEContributor implements WeightedSearchEverywhereContributor<Od
                     if (moduleName.startsWith(pattern)) {
                         OdooModule module = moduleService.getModule(moduleName);
                         if (module != null) {
-                            consumer.process(OdooFoundItemDescriptor.weighted(pattern, new OdooModulePsiElement(module, project)));
+                            // consumer.process(OdooFoundItemDescriptor.weighted(pattern, new OdooModulePsiElement(module, project)));
                         }
-                    }
-                }
-            });
-
-            OdooModelService modelService = project.getService(OdooModelService.class);
-            ApplicationManager.getApplication().runReadAction(() -> {
-                for (String modelName : modelService.getModelNames()) {
-                    if (progressIndicator.isCanceled()) {
-                        // cancel current SE contributions
-                        break;
-                    }
-                    if (modelName != null && modelName.startsWith(pattern)) {
-                        consumer.process(OdooFoundItemDescriptor.weighted(pattern, new OdooModelPsiElement(modelService.getModel(modelName), project)));
                     }
                 }
             });
@@ -99,10 +85,10 @@ public class OdooSEContributor implements WeightedSearchEverywhereContributor<Od
             OdooRecordService recordService = project.getService(OdooRecordService.class);
             ApplicationManager.getApplication().runReadAction(() -> {
                 WithinProject.run(project, () -> {
-                    for (String xmlId : recordService.getXmlIds()) {
+                    recordService.getXmlIds().forEach(xmlId -> {
                         if (progressIndicator.isCanceled()) {
                             // cancel current SE contributions
-                            break;
+                            return;
                         }
                         if (xmlId != null && xmlId.startsWith(pattern)) {
                             OdooRecord record = recordService.getRecord(xmlId);
@@ -121,7 +107,7 @@ public class OdooSEContributor implements WeightedSearchEverywhereContributor<Od
                                 consumer.process(OdooFoundItemDescriptor.weighted(pattern, new OdooRecordPsiElement(record, project)));
                             }
                         }
-                    }
+                    });
                 });
             });
         }

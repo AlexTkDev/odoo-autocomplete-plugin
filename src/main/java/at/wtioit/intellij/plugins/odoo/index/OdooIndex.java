@@ -1,9 +1,6 @@
 package at.wtioit.intellij.plugins.odoo.index;
 
 import at.wtioit.intellij.plugins.odoo.AbstractDataExternalizer;
-import at.wtioit.intellij.plugins.odoo.models.index.OdooModelFileIndex;
-import at.wtioit.intellij.plugins.odoo.modules.index.OdooModuleFileIndex;
-import at.wtioit.intellij.plugins.odoo.records.index.OdooRecordFileIndex;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -35,16 +32,10 @@ public class OdooIndex extends FileBasedIndexExtension<String, OdooIndexEntry> {
 
     private static Map<String, OdooIndexExtension<? extends OdooIndexEntry>> initSubIndexExtensions() {
         HashMap<String, OdooIndexExtension<? extends OdooIndexEntry>> map = new HashMap<>();
-        map.put(OdooIndexSubKeys.ODOO_RECORDS.name(), new OdooRecordFileIndex());
-        map.put(OdooIndexSubKeys.ODOO_MODELS.name(), new OdooModelFileIndex());
-        map.put(OdooIndexSubKeys.ODOO_MODULES.name(), new OdooModuleFileIndex());
-        map.put(OdooIndexSubKeys.INDEX_KEYS.name(), new OdooIndexKeysIndex());
-        map.put(OdooIndexSubKeys.ODOO_JS_MODULES.name(), new OdooJsModuleFileIndex());
-        map.put(OdooIndexSubKeys.ODOO_PO_MSGIDS.name(), new OdooPoMsgIdFileIndex());
         return map;
     }
 
-    // TODO unify the arguments for those methods
+    // TODO: Unify the arguments for those methods
 
     public static <T extends OdooIndexEntry> Stream<T> getValues(String key, GlobalSearchScope scope, Class<T> clazz) {
         FileBasedIndex index = FileBasedIndex.getInstance();
@@ -55,11 +46,11 @@ public class OdooIndex extends FileBasedIndexExtension<String, OdooIndexEntry> {
     }
 
     public static Stream<String> getAllKeys(OdooIndexSubKeys odooIndexSubKeys, Project project) {
-        // TODO this seems very slow (could use an own index ;-) )
+        // TODO: This seems very slow (could use a custom index)
         FileBasedIndex index = FileBasedIndex.getInstance();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-        // TODO if we add all keys under a second key (v.getSubIndexKey) as value
-        // we can fetch all keys for a sub index very fast (i guess)
+        // TODO: If we add all keys under a second key (v.getSubIndexKey) as value
+        // we can fetch all keys for a sub index very fast (I guess)
         if (true) {
             return index.getValues(OdooIndex.NAME, odooIndexSubKeys.name(), scope).stream()
                     .filter(e -> e instanceof OdooKeyIndexEntry)
@@ -130,17 +121,15 @@ public class OdooIndex extends FileBasedIndexExtension<String, OdooIndexEntry> {
 
     @Override
     public @NotNull FileBasedIndex.InputFilter getInputFilter() {
-        return (file -> subIndexExtensions.values().stream()
-                .map(FileBasedIndexExtension::getInputFilter)
-                .anyMatch(inputFilter -> inputFilter.acceptInput(file)));
+        return (file -> false);
     }
 
     @Override
     public boolean dependsOnFileContent() {
-        return subIndexExtensions.values().stream().anyMatch(FileBasedIndexExtension::dependsOnFileContent);
+        return false;
     }
 
     public static OdooIndex getInstance() {
-        // ... existing code ...
+        return null;
     }
 }

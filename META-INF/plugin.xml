@@ -1,0 +1,42 @@
+<idea-plugin>
+  <id>odoo.autocomplete.support.community</id>
+  <name>Odoo Autocompletion Support</name>
+  <description>An enhanced IntelliJ/PyCharm plugin for Odoo development, providing advanced autocompletion, code navigation, and inspections for models, records, and more.</description>
+  <vendor url="https://github.com/AlexTkDev/odoo-autocomplete-plugin">AlexTkDev</vendor>
+  <version>1.0.1</version>
+  <idea-version since-build="251" until-build="241.*" />
+  <change-notes><![CDATA[<h3>Version 0.7.0</h3>
+      <ul>
+        <li><b>Feature:</b> Added full support for JavaScript module autocompletion and navigation (<code>odoo.define</code>).</li>
+        <li><b>Feature:</b> Added full support for PO/POT file <code>msgid</code> autocompletion and navigation.</li>
+        <li><b>Feature:</b> Added inspections for missing JS modules and PO <code>msgid</code>s.</li>
+        <li><b>Update:</b> Plugin renamed to "Odoo Autocomplete Plugin".</li>
+        <li><b>Update:</b> Compatibility updated for IntelliJ/PyCharm 2025.1 and newer.</li>
+        <li><b>Refactor:</b> Translated codebase and documentation to English.</li>
+      </ul>]]></change-notes>
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.jetbrains.python</depends>
+  <depends>JavaScript</depends>
+  <extensions>
+    <localInspection language="XML" shortName="MissingRecordDefinitionXml" bundle="at.wtioit.intellij.plugins.OdooBundle" key="INSP.NAME.missing.record.definition" groupKey="INSP.GROUP.odoo" enabledByDefault="true" level="WARNING" implementationClass="at.wtioit.intellij.plugins.odoo.records.inspection.MissingRecordDefinitionXmlInspection" />
+    <localInspection language="JavaScript" shortName="MissingJsModule" bundle="at.wtioit.intellij.plugins.OdooBundle" key="INSP.NAME.missing.js.module" groupKey="INSP.GROUP.odoo" enabledByDefault="true" level="WARNING" implementationClass="at.wtioit.intellij.plugins.odoo.inspections.MissingJsModuleInspection" />
+    <localInspection language="Python" shortName="MissingPoMsgId" bundle="at.wtioit.intellij.plugins.OdooBundle" key="INSP.NAME.missing.po.msgid" groupKey="INSP.GROUP.odoo" enabledByDefault="true" level="WARNING" implementationClass="at.wtioit.intellij.plugins.odoo.inspections.MissingPoMsgIdInspection" />
+    <localInspection language="XML" shortName="MissingPoMsgIdXml" bundle="at.wtioit.intellij.plugins.OdooBundle" key="INSP.NAME.missing.po.msgid" groupKey="INSP.GROUP.odoo" enabledByDefault="true" level="WARNING" implementationClass="at.wtioit.intellij.plugins.odoo.inspections.MissingPoMsgIdInspection" />
+    <!-- Odoo Model Completion Contributor (Python) -->
+    <completion.contributor language="Python" implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooModelCompletionContributor" />
+    <!-- Odoo Model Completion Contributor (XML) -->
+    <completion.contributor language="XML" implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooXmlModelCompletionContributor" />
+    <!-- Odoo Manifest Completion Contributor -->
+    <completion.contributor language="Python" implementationClass="at.wtioit.intellij.plugins.odoo.OdooManifestCompletionContributor" />
+    <!-- Odoo Model Goto Declaration Handler -->
+    <gotoDeclarationHandler implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooModelGoToDeclarationHandler" />
+    <!-- Odoo Model Inspection -->
+    <localInspection implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooModelInspection" />
+    <!-- Odoo Model QuickFix -->
+    <localQuickFix implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooModelQuickFix" />
+    <!-- Odoo Model Template Generator -->
+    <intentionAction implementationClass="at.wtioit.intellij.plugins.odoo.models.OdooModelTemplateGenerator" />
+    <!-- Odoo Documentation Provider -->
+    <documentationProvider implementationClass="at.wtioit.intellij.plugins.odoo.OdooDocumentationProvider" />
+  </extensions>
+</idea-plugin>

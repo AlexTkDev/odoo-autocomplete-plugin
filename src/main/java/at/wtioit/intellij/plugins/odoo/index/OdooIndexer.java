@@ -21,11 +21,11 @@ public class OdooIndexer implements DataIndexer<String, OdooIndexEntry, FileCont
                 .flatMap(map -> map.entrySet().stream())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         if (indexValues.size() > 0) {
-            // TODO add cross indexing (records for base.model_, base.field_)
+            // TODO: Add cross indexing (records for base.model_, base.field_)
             for (CrossSubIndexMapper mapper : MAPPERS) {
                 mapper.mapIndexEntries(indexValues, inputData);
             }
-            // add entries for sub indexes, so they know what they should index
+            // Add entries for sub indexes, so they know what they should index
             for (Map.Entry<OdooIndexSubKeys, List<String>> entry : indexValues.entrySet().stream().collect(Collectors.groupingBy(
                     e -> e.getValue().getSubIndexKey(),
                     Collectors.mapping(e -> e.getKey(), Collectors.toList())

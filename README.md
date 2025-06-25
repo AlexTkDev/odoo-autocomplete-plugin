@@ -1,89 +1,42 @@
-# 🚀 Odoo Autocomplete Plugin
+# 🚀 Odoo Autocompletion Support (v1.0.2)
 
-An enhanced IntelliJ/PyCharm plugin for Odoo development. It provides advanced autocompletion, code navigation, and inspections to supercharge your workflow. Supports all Odoo versions!
+A modern, production-ready plugin for PyCharm Community Edition and IntelliJ IDEA, designed to supercharge Odoo development.
+
+---
 
 ## ✨ Features
+- **Full Autocompletion:** Models, fields, XML-IDs, manifests, and more in Python and XML.
+- **Go to Declaration:** Instantly navigate to models, fields, records, and references.
+- **Inspections & Quickfixes:** For missing models, records, and manifest errors.
+- **Odoo-specific Code Generation:** Fast creation of Odoo models and records.
+- **Documentation Popups:** Inline Odoo docs for models and fields.
+- **Manifest & Security Support:** Navigation and validation for manifest and security files.
+- **Marketplace-ready:** All code and UI in English, ready for JetBrains Marketplace.
+- **No Ultimate dependencies, no license checks, fully open source.**
 
--   **Full Autocompletion:** For Models, Record XML IDs, Actions, Views, Menus, Groups, and more across Python, XML, and CSV files.
--   **Go To Declaration:** Instantly navigate to the definition of any Odoo entity.
--   **JavaScript Support:** Autocompletion and navigation for JS modules defined with `odoo.define`.
--   **Translation Support:** Autocompletion and navigation for `msgid` entries from PO/POT files.
--   **Smart Inspections:** Get warnings for missing models, records, JS modules, and translations.
--   **High Performance:** Built with a powerful indexing engine for a fast and smooth developer experience.
+---
 
-## 🛠️ Installation
+## 📦 Installation
+1. Download the latest release from [GitHub Releases](https://github.com/AlexTkDev/odoo-autocomplete-plugin/releases) or build from source:
+   ```bash
+   ./gradlew clean build --no-build-cache --refresh-dependencies
+   ```
+2. In PyCharm: Preferences → Plugins → Install plugin from disk → select the built `.zip` file.
+3. Restart PyCharm.
 
-1.  **Build the plugin:**
-    ```bash
-    ./gradlew buildPlugin
-    ```
-2.  The plugin `.jar` file will be created in the `build/libs/` directory.
-3.  **Install in your IDE:**
-    -   In PyCharm/IntelliJ, go to `File > Settings > Plugins`.
-    -   Click the gear icon ⚙️ and select **"Install Plugin from Disk..."**.
-    -   Choose the `.jar` file you just built.
+---
 
-## 📚 Documentation
+## 📚 Documentation & Support
+- **Repository:** [github.com/AlexTkDev/odoo-autocomplete-plugin](https://github.com/AlexTkDev/odoo-autocomplete-plugin)
+- **Documentation:** [Full documentation](https://github.com/AlexTkDev/odoo-autocomplete-plugin/blob/master/documentation/README.md)
+- **Issues & Feedback:** [GitHub Issues](https://github.com/AlexTkDev/odoo-autocomplete-plugin/issues)
 
-For a detailed list of features, supported entities, and usage examples, please see the full documentation: [documentation/README.md](documentation/README.md).
+---
 
-## 📄 License
+## 📝 License
+MIT License. Copyright (c) 2024 AlexTkDev.
 
-This project is licensed under the MIT License. See the [License.txt](License.txt) file for details.
+---
+Odoo® is a registered trademark of Odoo S.A. This plugin is an independent open-source project and is not affiliated with Odoo S.A.
 
-## 🧑‍💻 Authorship
-
-Copyright (c) 2024 AlexTkDev.
-
-Based on the original work by `wt-io-it/odoo-pycharm-plugin`.
-
-# Installing
-
-The Plugin will be made available in the [JetBrains Plugin Repository](https://plugins.jetbrains.com/plugin/13083-odoo-support-for-pycharm)
-
-Alternatively you can install it as a local file
-* Download [odoo_plugin.jar](odoo_plugin.jar)
-* In PyCharm in File > Settings > Plugin select the gear icon.
-* Select install plugin from disk and choose the downloaded odoo_plugin.jar
-
-# Contributing
-
-## Checkout and open Odoo Autocompletion Plugin in IntelliJ IDEA
-
-1. git clone https://github.com/wt-io-it/odoo-pycharm-plugin.git into a directory
-1. Open a new project by selecting File > New > Project from Version Control > Git
-1. Enter `https://github.com/wt-io-it/odoo-pycharm-plugin.git` into the Field URL
-   ![intellij new project from version control](documentation/setup/01_new_project_url.png)
-1. Start coding
-
-## Agreement to publish the code in the Jetbrains Plugin Repository 
-
-By contributing you agree that this plugin is also published in the JetBrains Plugin Repository under the terms of the
-JetBrains Plugin Marketplace Developer Agreement
-
-# Development HowTos
-## Build Plugin
-To build the plugin perform the following steps
-* checkout the version you want to build
-* run `./gradlew buildPlugin`
-## Install Development Version of the Plugin
-> Development versions are marked with -SNAPSHOT
-* Build the plugin as descriped above
-* In PyCharm / IntelliJ open File > Settings
-* Select Plugins
-* Select the gear icon above the plugin list and select "Install Plugin from Disk ..."
-![Select "Install Plugin from Disk ..."](documentation/dev/01_install_dev_plugin.png)
-* Select the plugin jar file from [build/libs](build/libs) directory and click "OK"
-* Click the "Restart IDE" button to apply the new version of the plugin:
-![Restart IDE button](documentation/dev/02_install_dev_plugin_restart.png)
-## Publish a new version
-* test plugin with `./gradlew test`
-* test plugin manually by installing it
-* review changelog
-* change -SNAPSHOT version to non snapshot version and perform release commit
-* verify the plugin with `./gradlew verifyPlugin && ./gradlew runPluginVerifier`
-* submit plugin to jetbrains review process with `./gradlew publishPlugin`
-* tag commit as version with `vN.N.N`
-* push commit and tag
-* prepare version numbers for next version and commit
-* push commit
+*This README is up to date for version 1.0.2 and the 2025.1+ JetBrains platform.*

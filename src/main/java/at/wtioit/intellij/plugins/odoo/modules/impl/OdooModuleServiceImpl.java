@@ -8,7 +8,6 @@ import at.wtioit.intellij.plugins.odoo.index.OdooIndex;
 import at.wtioit.intellij.plugins.odoo.index.OdooIndexSubKeys;
 import at.wtioit.intellij.plugins.odoo.modules.OdooModule;
 import at.wtioit.intellij.plugins.odoo.modules.OdooModuleService;
-import at.wtioit.intellij.plugins.odoo.modules.index.OdooDeserializedModuleImpl;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -36,7 +35,6 @@ public class OdooModuleServiceImpl implements OdooModuleService {
         this.project = project;
     }
 
-    @Override
     public Iterable<OdooModule> getModules() {
         List<OdooModule> modules = new ArrayList<>();
         OdooIndex.getAllKeyValuesPairs(project, OdooModule.class).forEach(nameModules -> {
@@ -49,13 +47,11 @@ public class OdooModuleServiceImpl implements OdooModuleService {
         return modules;
     }
 
-    @Override
     public Stream<String> getModuleNames() {
         return OdooIndex.getAllKeys(OdooIndexSubKeys.ODOO_MODULES, project);
     }
 
     @Nullable
-    @Override
     public OdooModule getModule(String moduleName) {
         if (!IndexWatcher.isCalledInIndexJob() && IndexWatcher.isFullyIndexed(project)) {
             return ApplicationManager.getApplication().runReadAction((Computable<OdooModule>) () -> {
@@ -74,11 +70,10 @@ public class OdooModuleServiceImpl implements OdooModuleService {
     }
 
     @Nullable
-    @Override
     public OdooModule getModule(@Nullable VirtualFile file) {
         if (file == null) return null;
         return ApplicationManager.getApplication().runReadAction((Computable<OdooModule>) () -> {
-            PsiDirectory moduleDirectory = getModuleDirectory(file.getPath());
+            PsiDirectory moduleDirectory = getOdooModuleDirectory(file.getPath());
             if (moduleDirectory != null) {
                 VirtualFile manifest = moduleDirectory.getVirtualFile().findFileByRelativePath("__manifest__.py");
                 if (manifest != null) {
@@ -92,12 +87,10 @@ public class OdooModuleServiceImpl implements OdooModuleService {
         });
     }
 
-    @Override
     public OdooModule findModule(String moduleName) {
         return getModule(moduleName);
     }
 
-    @Override
     public PsiDirectory getOdooDirectory() {
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         return WithinProject.call(project, () -> {
@@ -111,32 +104,26 @@ public class OdooModuleServiceImpl implements OdooModuleService {
         });
     }
 
-    @Override
-    public PsiDirectory getModuleDirectory(String location) {
+    public PsiDirectory getOdooModuleDirectory(String path) {
         // guess a module first (fast path)
-        // windows locations have slashes here as well (we get them from getPath())
-        String[] path = location.split("/");
+        String[] pathParts = path.split("/");
         String moduleName = null;
-        if (path.length >= 2 && "addons".equals(path[path.length - 2])) {
-            moduleName = path[path.length - 1];
-        } else if (path.length >= 3 && COMMON_ODOO_MODULE_SUBDIRS.contains(path[path.length - 2])) {
-            moduleName = path[path.length - 3];
+        if (pathParts.length >= 2 && "addons".equals(pathParts[pathParts.length - 2])) {
+            moduleName = pathParts[pathParts.length - 1];
+        } else if (pathParts.length >= 3 && COMMON_ODOO_MODULE_SUBDIRS.contains(pathParts[pathParts.length - 2])) {
+            moduleName = pathParts[pathParts.length - 3];
         }
         if (moduleName != null) {
             OdooModule module = getModule(moduleName);
             if (module != null) {
-                if (module instanceof OdooDeserializedModuleImpl && location.equals(module.getPath())) {
-                    // skip fast path for deserialized modules direct module path
-                    // slow path, search all __manifest__.py files
-                    return getModuleDirectorySlow(location);
-                } else if (location.equals(module.getPath()) || location.startsWith(module.getPath() + File.separator)) {
+                if (path.equals(module.getPath()) || path.startsWith(module.getPath() + File.separator)) {
                     return WithinProject.call(project, () -> (PsiDirectory) module.getDirectory());
                 }
             }
         }
 
         // slow path, search all __manifest__.py files
-        return getModuleDirectorySlow(location);
+        return getModuleDirectorySlow(path);
     }
 
     private PsiDirectory getModuleDirectorySlow(String location) {

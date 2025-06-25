@@ -1,6 +1,5 @@
 package at.wtioit.intellij.plugins.odoo.modules;
 
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,8 +13,7 @@ public interface OdooModuleService {
     @Nullable
     OdooModule getModule(String moduleName);
 
-    @Nullable
-    OdooModule getModule(@Nullable VirtualFile file);
+    // Not supported in Community Edition
 
     OdooModule findModule(String moduleName);
 
@@ -23,7 +21,7 @@ public interface OdooModuleService {
     PsiDirectory getOdooDirectory();
 
     @Nullable
-    PsiDirectory getModuleDirectory(String path);
+    PsiDirectory getOdooModuleDirectory(String path);
 
     static boolean isValidOdooModuleDirectory(@Nullable String path) {
         return path != null
