@@ -130,7 +130,7 @@ tasks {
     }
 
     publishPlugin {
-        token.set(System.getenv("AT_WTIOIT_PYCHARM_PLUGIN_intellijPublishToken"))
+        token.set(System.getenv("ODOO_AUTOCOMPLETE_PLUGIN_PUBLISH_TOKEN"))
     }
 
 }

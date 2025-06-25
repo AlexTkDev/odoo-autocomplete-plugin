@@ -35,6 +35,8 @@
   </change-notes>
 
   <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.python</depends>
+  <depends>com.intellij.lang.javascript</depends>
 
   <extensions>
     <localInspection language="XML" shortName="MissingRecordDefinitionXml" bundle="at.wtioit.intellij.plugins.OdooBundle"
