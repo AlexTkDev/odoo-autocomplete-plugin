@@ -35,9 +35,19 @@ The plugin is available for download on [GitHub](https://github.com/AlexTkDev/od
 ---
 
 ## 📝 License
-GNU General Public License v3.0. Copyright (c) 2024 AlexTkDev.
+
+GNU General Public License v3.0 with Additional Terms. Copyright (c) 2024 AlexTkDev.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+For additional terms, including notification and attribution requirements, see the full license text in the LICENSE file or at [project URL].
 
 ---
-Odoo® is a registered trademark of Odoo S.A. This plugin is an independent open-source project and is not affiliated with Odoo S.A.
+
+**Odoo® is a registered trademark of Odoo S.A. This plugin is an independent open-source project and is not affiliated with Odoo S.A.**
 
 *This README is up to date for version 1.0.2 and the 2025.1+ JetBrains platform.*
