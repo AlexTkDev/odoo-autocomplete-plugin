@@ -73,5 +73,5 @@ Odoo Autocompletion Support is a modern, production-ready plugin for PyCharm Com
 **A:** Extend the relevant `Matcher`/`Contributor` in the source code. The architecture is designed to be extensible.
 
 ## License
-MIT License. Copyright (c) 2024 AlexTkDev.
+GNU General Public License v3.0. Copyright (c) 2024 AlexTkDev.
 Based on the original work by wt-io-it/odoo-pycharm-plugin (https://github.com/wt-io-it/odoo-pycharm-plugin). 

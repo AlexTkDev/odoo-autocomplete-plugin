@@ -35,7 +35,7 @@ The plugin is available for download on [GitHub](https://github.com/AlexTkDev/od
 ---
 
 ## 📝 License
-MIT License. Copyright (c) 2024 AlexTkDev.
+GNU General Public License v3.0. Copyright (c) 2024 AlexTkDev.
 
 ---
 Odoo® is a registered trademark of Odoo S.A. This plugin is an independent open-source project and is not affiliated with Odoo S.A.

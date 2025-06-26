@@ -19,7 +19,7 @@
       <b>Documentation:</b> <a href="https://github.com/AlexTkDev/odoo-autocomplete-plugin/blob/master/documentation/README.md">Full documentation</a><br/>
       <b>Issues & Feedback:</b> <a href="https://github.com/AlexTkDev/odoo-autocomplete-plugin/issues">GitHub Issues</a>
     </p>
-    <p><b>License:</b> MIT License. Copyright (c) 2024 AlexTkDev.</p>
+    <p><b>License:</b> GNU General Public License v3.0. Copyright (c) 2024 AlexTkDev.</p>
     <p><i>Odoo® is a registered trademark of Odoo S.A. This plugin is an independent open-source project and is not affiliated with Odoo S.A.</i></p>
   ]]></description>
   <vendor url="https://github.com/AlexTkDev/odoo-autocomplete-plugin">AlexTkDev</vendor>
